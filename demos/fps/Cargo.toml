@@ -1,0 +1,12 @@
+[package]
+name = "kengaai-demo-fps"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = { workspace = true }
+env_logger = { workspace = true }
+log = { workspace = true }
+winit = { workspace = true }
+kengaai-fps = { path = "../../crates/fps" }
+kengaai-scene-fps = { path = "../../crates/scene_fps" }

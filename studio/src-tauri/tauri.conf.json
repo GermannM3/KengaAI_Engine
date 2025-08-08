@@ -1,0 +1,35 @@
+{
+  "productName": "KengaAI Studio",
+  "version": "0.1.0",
+  "identifier": "com.kengaai.studio",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "KengaAI Studio",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "decorations": true,
+        "transparent": false
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["msi", "dmg", "appimage", "deb"],
+    "identifier": "com.kengaai.studio",
+    "icon": [],
+    "windows": {
+      "wix": {
+        "language": "ru-RU",
+        "enableElevatedUpdateTask": true,
+        "fragmentPaths": []
+      },
+      "nsis": null
+    }
+  }
+}
