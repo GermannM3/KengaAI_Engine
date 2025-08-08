@@ -36,10 +36,8 @@ pub struct Player {
     pub spawn: [f32; 3],
     pub yaw: f32,
     pub pitch: f32,
-    pub move_: Move,
     #[serde(rename = "move")]
-    #[serde(skip)]
-    dummy: (),
+    pub r#move: Move,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -283,7 +283,7 @@ impl FpsRenderer {
             config,
             size,
             color: wgpu::Color{
-                r: scene.render.clearColor[0] as f64 as f32 as f64 as f32 as f64 as f32, // safe coercion
+                r: scene.render.clearColor[0],
                 g: scene.render.clearColor[1],
                 b: scene.render.clearColor[2],
                 a: scene.render.clearColor[3],

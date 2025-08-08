@@ -1,25 +1,25 @@
-# KengaAI Studio
+# KengaAI Studio (Desktop)
 
 Настольное приложение для генерации FPS‑уровней (JSON) под KengaAI Engine.
 
-Цвета интерфейса: синий, зелёный, чёрный, белый.
+Цвета: синий (#1E88E5), зелёный (#2ECC71), чёрный (#0A0E12), белый (#FFFFFF).
 
-## Установка и сборка
+## Локальная сборка
 
-1) Установите Rust (stable), Node.js 18+, и Tauri Prerequisites:
+Требуется: Rust stable, Node.js 18+, PNPM 9, инструменты платформы.
+
 - Windows: Visual Studio Build Tools + WiX Toolset (для MSI)
-- macOS: Xcode Command Line Tools
-- Linux: зависимости GTK/WebKit (см. https://tauri.app)
+- macOS: Xcode CLT
+- Linux: зависимости GTK/WebKit (см. tauri.app)
 
-2) Сборка:
 \`\`\`bash
 cd studio
-pnpm install # или npm/yarn
+pnpm install
 pnpm build
 pnpm tauri:build
 \`\`\`
 
-Итоги:
-- Windows: MSI в `studio/src-tauri/target/release/bundle/msi/`
-- macOS: DMG в `.../bundle/dmg/`
-- Linux: AppImage и DEB в `.../bundle/`
+Результат:
+- Windows MSI: studio/src-tauri/target/release/bundle/msi/
+- macOS DMG: studio/src-tauri/target/release/bundle/dmg/
+- Linux AppImage/DEB: studio/src-tauri/target/release/bundle/

@@ -27,7 +27,7 @@ fn main() -> Result<()> {
     window.set_cursor_grab(winit::window::CursorGrabMode::Confined).ok();
 
     let mut renderer = FpsRenderer::new(&window, &scene)?;
-    let mut ctrl = FpsController::new(scene.player.move_.speed, scene.player.move_.run);
+    let mut ctrl = FpsController::new(scene.player.r#move.speed, scene.player.r#move.run);
     renderer.set_clear(scene.render.clearColor);
 
     let start = Instant::now();
