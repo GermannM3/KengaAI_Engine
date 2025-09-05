@@ -1,0 +1,6 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/generate-scene/route": "/api/generate-scene",
+  "/page": "/",
+  "/api/neural-test/route": "/api/neural-test"
+}

@@ -1,22 +1,19 @@
 [workspace]
 members = [
-  "crates/core",
-  "crates/renderer",
-  "crates/input",
-  "crates/audio",
-  "crates/physics",
-  "crates/scripting",
-  "crates/ui",
-  "crates/tools",
   "crates/scene_fps",
   "crates/fps",
-  "engine-cli",
-  "editor",
-  "demos/minimal",
-  "demos/no-code",
   "demos/fps",
+  "demos/kengaquest",
+  "demos/simple_test",
+  "demos/minimal",
+  "demos/gpu_test",
 ]
 resolver = "2"
+
+# исключаем tauri-пакет студии из воркспейса движка
+exclude = [
+  "studio/src-tauri",
+]
 
 [workspace.package]
 edition = "2021"

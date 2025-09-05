@@ -35,6 +35,7 @@ export const fpsSceneSchema = z.object({
       size: vec3,
       rotY: z.number(),
       color: color3,
+      texture: z.string().optional(),
     })).default([])
   }),
   enemies: z.array(z.object({

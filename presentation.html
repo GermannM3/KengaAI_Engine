@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KengaAI Engine - Revolutionary Game Engine</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .slide {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        
+        .slide h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 201, 255, 0.3);
+        }
+        
+        .slide h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #00c9ff;
+        }
+        
+        .slide p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 1rem 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 201, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 201, 255, 0.2);
+        }
+        
+        .feature-card h3 {
+            color: #00c9ff;
+            margin-top: 0;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .tech-item {
+            background: rgba(0, 201, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 90%;
+            max-width: 1000px;
+            margin: 2rem auto;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid rgba(0, 201, 255, 0.3);
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: rgba(0, 201, 255, 0.3);
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #00c9ff, #92fe9d);
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <h1>KENGA AI ENGINE</h1>
+        <p>The Next Generation Game Engine</p>
+        <p>Revolutionizing Game Development with Rust and WebGPU</p>
+    </div>
+    
+    <div class="slide">
+        <h2>Why KengaAI Engine?</h2>
+        <p>Built for performance, designed for developers</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>⚡ Lightning Fast</h3>
+                <p>Built with Rust for memory safety and zero-cost abstractions</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎨 Modern Graphics</h3>
+                <p>WebGPU backend for cutting-edge graphics capabilities</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔧 Developer Friendly</h3>
+                <p>Intuitive API and powerful tooling</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="slide">
+        <h2>UE5-Level Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>✨ Lumen Lighting</h3>
+                <p>Dynamic global illumination and reflections</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔺 Nanite Geometry</h3>
+                <p>Virtualized geometry system for millions of polygons</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎮 Advanced Animation</h3>
+                <p>Sophisticated skeletal animation with blend trees</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌐 VR/AR Support</h3>
+                <p>Full support for immersive experiences</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔗 Multiplayer</h3>
+                <p>Built-in networking with server-authoritative architecture</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧩 Blueprints</h3>
+                <p>Visual scripting system for rapid development</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="slide">
+        <h2>Technology Stack</h2>
+        <div class="tech-stack">
+            <div class="tech-item">Rust</div>
+            <div class="tech-item">WebGPU</div>
+            <div class="tech-item">wgpu</div>
+            <div class="tech-item">Tauri</div>
+            <div class="tech-item">React</div>
+            <div class="tech-item">rapier3d</div>
+            <div class="tech-item">rodio</div>
+        </div>
+        <p>Modern, safe, and performant technologies</p>
+    </div>
+    
+    <div class="slide">
+        <h2>Comparison with UE5</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Unreal Engine 5</th>
+                    <th>KengaAI Engine</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Performance</td>
+                    <td>Excellent</td>
+                    <td>Superior (Rust)</td>
+                </tr>
+                <tr>
+                    <td>Memory Safety</td>
+                    <td>Limited</td>
+                    <td>Guaranteed</td>
+                </tr>
+                <tr>
+                    <td>Learning Curve</td>
+                    <td>Steep</td>
+                    <td>Moderate</td>
+                </tr>
+                <tr>
+                    <td>Customization</td>
+                    <td>Good</td>
+                    <td>Excellent</td>
+                </tr>
+                <tr>
+                    <td>Open Source</td>
+                    <td>Partial</td>
+                    <td>Full</td>
+                </tr>
+                <tr>
+                    <td>Community</td>
+                    <td>Large</td>
+                    <td>Growing</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="slide">
+        <h2>Ready to Get Started?</h2>
+        <p>Join the revolution in game development</p>
+        <button class="cta-button" onclick="window.location.href='https://github.com/your-repo/kengaai-engine'">
+            Download KengaAI Engine
+        </button>
+        <p>Free and open source</p>
+    </div>
+    
+    <div class="footer">
+        KengaAI Engine - The Future of Game Development
+    </div>
+</body>
+</html>

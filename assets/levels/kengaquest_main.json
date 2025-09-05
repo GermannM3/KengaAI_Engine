@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "schema": "KengaFPSSceneV0",
+    "version": "0.1.0",
+    "name": "kengaquest_main"
+  },
+  "render": {
+    "clearColor": [0.0, 0.0, 0.0, 1.0]
+  },
+  "player": {
+    "spawn": [0, 1.5, 0],
+    "yaw": 0.0,
+    "pitch": 0.0,
+    "move": {
+      "speed": 4.5,
+      "run": 7.5
+    }
+  },
+  "level": {
+    "boxes": [
+      {
+        "pos": [0.0, 0.0, 0.0],
+        "size": [20.0, 1.0, 20.0],
+        "rotY": 0.0,
+        "color": [0.1, 0.1, 0.1],
+        "texture": "floor.png"
+      },
+      {
+        "pos": [0.0, 3.0, -5.0],
+        "size": [10.0, 5.0, 1.0],
+        "rotY": 0.0,
+        "color": [0.2, 0.2, 0.2]
+      },
+      {
+        "pos": [-6.0, 1.0, -2.0],
+        "size": [2.0, 2.0, 2.0],
+        "rotY": 0.0,
+        "color": [0.8, 0.2, 0.2]
+      },
+      {
+        "pos": [6.0, 1.0, -2.0],
+        "size": [2.0, 2.0, 2.0],
+        "rotY": 0.0,
+        "color": [0.2, 0.8, 0.2]
+      }
+    ]
+  },
+  "lights": [
+    {
+      "kind": "point",
+      "position": [0.0, 4.0, -3.0],
+      "color": [1.0, 1.0, 1.0],
+      "intensity": 1.0
+    }
+  ],
+  "triggers": [
+    {
+      "pos": [-6.0, 1.0, -2.0],
+      "size": [2.0, 2.0, 2.0],
+      "onEnter": "start_level:level1"
+    },
+    {
+      "pos": [6.0, 1.0, -2.0],
+      "size": [2.0, 2.0, 2.0],
+      "onEnter": "start_level:level2"
+    }
+  ],
+  "goals": {
+    "type": "extract",
+    "point": [0.0, 1.5, -8.0]
+  }
+}

@@ -12,3 +12,6 @@ pollster = { workspace = true }
 bytemuck = { workspace = true }
 glam = { workspace = true }
 kengaai-scene-fps = { path = "../scene_fps" }
+image = "0.24"
+rapier3d = "0.17"
+rodio = "0.17"

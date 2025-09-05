@@ -4,7 +4,7 @@ import { fpsSceneSchema, type KengaFpsScene } from '@/lib/schema'
 import { buildFpsSystemPrompt } from '@/lib/prompt'
 import { downloadJson } from '@/lib/download'
 
-const SUPABASE_EDGE_URL = 'https://yhzyyghmgarnfbmwhxqu.supabase.co/functions/v1/ai-neural-network-api'
+const SUPABASE_EDGE_URL = import.meta.env.VITE_SUPABASE_EDGE_URL || 'https://yhzyyghmgarnfbmwhxqu.supabase.co/functions/v1/ai-neural-network-api'
 
 export default function App() {
   const [prompt, setPrompt] = useState<string>(examplePrompt)
@@ -21,11 +21,18 @@ export default function App() {
     try {
       const sys = buildFpsSystemPrompt({ style, levelName, maxBoxes: 128, maxEnemies: 16 })
       const msg = `${sys}\n\nПожелания пользователя:\n${prompt}`
-      const res = await fetch(SUPABASE_EDGE_URL, {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 45_000)
+      const target = SUPABASE_EDGE_URL || 'mock'
+      const res = await fetch(target === 'mock' ? '/api/generate-scene' : SUPABASE_EDGE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, files: [], generateImage: false })
+        body: target === 'mock'
+          ? JSON.stringify({ kind: 'fps', prompt, style, levelName, maxBoxes: 128, maxEnemies: 16 })
+          : JSON.stringify({ message: msg, files: [], generateImage: false }),
+        signal: controller.signal,
       })
+      clearTimeout(timeout)
       if (!res.ok) throw new Error(`API ${res.status}`)
       const text = await res.text()
       const json = JSON.parse(text)

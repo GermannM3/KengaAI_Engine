@@ -1,0 +1,27 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0d0d1a" />
+  
+  <!-- Floor -->
+  <rect x="200" y="250" width="400" height="50" fill="#1a1a33" />
+  
+  <!-- Vertical bars -->
+  <rect x="250" y="150" width="30" height="100" fill="#cc3333" />
+  <rect x="320" y="150" width="30" height="100" fill="#33cc33" />
+  <rect x="450" y="150" width="30" height="100" fill="#3333cc" />
+  <rect x="520" y="150" width="30" height="100" fill="#cccc33" />
+  
+  <!-- Top connector -->
+  <rect x="200" y="130" width="400" height="20" fill="#cccccc" />
+  
+  <!-- Particles effect (simplified) -->
+  <circle cx="400" cy="100" r="5" fill="#6666ff" opacity="0.7" />
+  <circle cx="380" cy="80" r="3" fill="#6666ff" opacity="0.5" />
+  <circle cx="420" cy="90" r="4" fill="#6666ff" opacity="0.6" />
+  <circle cx="390" cy="110" r="3" fill="#6666ff" opacity="0.5" />
+  <circle cx="410" cy="70" r="2" fill="#6666ff" opacity="0.4" />
+  
+  <!-- Text -->
+  <text x="400" y="320" font-family="monospace" font-size="48" font-weight="bold" fill="white" text-anchor="middle">KENGA</text>
+  <text x="400" y="360" font-family="monospace" font-size="28" fill="#cccccc" text-anchor="middle">AI ENGINE</text>
+</svg>

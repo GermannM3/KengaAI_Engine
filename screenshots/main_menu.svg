@@ -1,0 +1,21 @@
+<svg width="800" height="480" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0d0d1a" />
+  
+  <!-- Floor -->
+  <rect x="80" y="380" width="640" height="80" fill="#1a1a33" />
+  
+  <!-- Level selection platforms -->
+  <rect x="160" y="300" width="80" height="30" fill="#cc3333" />
+  <rect x="560" y="300" width="80" height="30" fill="#33cc33" />
+  
+  <!-- Text -->
+  <text x="400" y="100" font-family="monospace" font-size="48" font-weight="bold" fill="white" text-anchor="middle">KENGaQUEST</text>
+  <text x="200" y="325" font-family="monospace" font-size="24" fill="white" text-anchor="middle">Level 1</text>
+  <text x="600" y="325" font-family="monospace" font-size="24" fill="white" text-anchor="middle">Level 2</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="400" cy="200" r="20" fill="#6666ff" opacity="0.7" />
+  <circle cx="350" cy="180" r="10" fill="#6666ff" opacity="0.5" />
+  <circle cx="450" cy="190" r="15" fill="#6666ff" opacity="0.6" />
+</svg>

@@ -1,0 +1,12 @@
+[package]
+name = "minimal-demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kengaai-fps = { path = "../../crates/fps" }
+kengaai-scene-fps = { path = "../../crates/scene_fps" }
+winit = "0.29"
+anyhow = "1"
+env_logger = "0.11"
+log = "0.4"

@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "schema": "KengaFPSSceneV0",
+    "version": "0.1.0",
+    "name": "kengaquest_level2"
+  },
+  "render": {
+    "clearColor": [0.1, 0.05, 0.05, 1.0]
+  },
+  "player": {
+    "spawn": [0, 1.5, 0],
+    "yaw": 0.0,
+    "pitch": 0.0,
+    "move": {
+      "speed": 4.5,
+      "run": 7.5
+    }
+  },
+  "weapons": [
+    {
+      "id": "blaster",
+      "kind": "hitscan",
+      "damage": 10.0,
+      "rate": 5.0,
+      "spread": 2.0
+    }
+  ],
+  "level": {
+    "boxes": [
+      {
+        "pos": [0.0, 0.0, 0.0],
+        "size": [30.0, 1.0, 30.0],
+        "rotY": 0.0,
+        "color": [0.3, 0.2, 0.2],
+        "texture": "floor.png"
+      },
+      {
+        "pos": [0.0, 5.0, 0.0],
+        "size": [30.0, 1.0, 30.0],
+        "rotY": 0.0,
+        "color": [0.3, 0.2, 0.2]
+      },
+      {
+        "pos": [15.0, 2.5, 0.0],
+        "size": [1.0, 5.0, 30.0],
+        "rotY": 0.0,
+        "color": [0.4, 0.3, 0.3]
+      },
+      {
+        "pos": [-15.0, 2.5, 0.0],
+        "size": [1.0, 5.0, 30.0],
+        "rotY": 0.0,
+        "color": [0.4, 0.3, 0.3]
+      },
+      {
+        "pos": [0.0, 2.5, 15.0],
+        "size": [30.0, 5.0, 1.0],
+        "rotY": 0.0,
+        "color": [0.4, 0.3, 0.3]
+      },
+      {
+        "pos": [0.0, 2.5, -15.0],
+        "size": [30.0, 5.0, 1.0],
+        "rotY": 0.0,
+        "color": [0.4, 0.3, 0.3]
+      },
+      {
+        "pos": [8.0, 1.0, 8.0],
+        "size": [3.0, 3.0, 3.0],
+        "rotY": 0.785,
+        "color": [0.8, 0.6, 0.2]
+      },
+      {
+        "pos": [-8.0, 1.0, -8.0],
+        "size": [3.0, 3.0, 3.0],
+        "rotY": 0.785,
+        "color": [0.8, 0.6, 0.2]
+      },
+      {
+        "pos": [8.0, 1.0, -8.0],
+        "size": [3.0, 3.0, 3.0],
+        "rotY": 0.785,
+        "color": [0.8, 0.6, 0.2]
+      },
+      {
+        "pos": [-8.0, 1.0, 8.0],
+        "size": [3.0, 3.0, 3.0],
+        "rotY": 0.785,
+        "color": [0.8, 0.6, 0.2]
+      }
+    ]
+  },
+  "lights": [
+    {
+      "kind": "point",
+      "position": [0.0, 4.0, 0.0],
+      "color": [1.0, 0.8, 0.6],
+      "intensity": 1.0
+    },
+    {
+      "kind": "point",
+      "position": [8.0, 2.0, 8.0],
+      "color": [1.0, 0.8, 0.2],
+      "intensity": 0.7
+    },
+    {
+      "kind": "point",
+      "position": [-8.0, 2.0, -8.0],
+      "color": [1.0, 0.8, 0.2],
+      "intensity": 0.7
+    },
+    {
+      "kind": "point",
+      "position": [8.0, 2.0, -8.0],
+      "color": [1.0, 0.8, 0.2],
+      "intensity": 0.7
+    },
+    {
+      "kind": "point",
+      "position": [-8.0, 2.0, 8.0],
+      "color": [1.0, 0.8, 0.2],
+      "intensity": 0.7
+    }
+  ],
+  "particles": [
+    {
+      "position": [0.0, 3.0, 0.0],
+      "color": [1.0, 0.5, 0.2],
+      "count": 150,
+      "lifetime": 1.5,
+      "speed": 1.5,
+      "spread": 0.7
+    }
+  ],
+  "enemies": [
+    {
+      "kind": "guard",
+      "spawn": [5.0, 1.5, 5.0],
+      "patrol": [
+        [5.0, 1.5, 5.0],
+        [5.0, 1.5, -5.0],
+        [-5.0, 1.5, -5.0],
+        [-5.0, 1.5, 5.0]
+      ],
+      "physics": {
+        "type": "dynamic",
+        "mass": 70.0,
+        "friction": 0.5,
+        "restitution": 0.3
+      },
+      "behavior": {
+        "type": "patrol"
+      }
+    },
+    {
+      "kind": "chaser",
+      "spawn": [10.0, 1.5, 10.0],
+      "physics": {
+        "type": "dynamic",
+        "mass": 80.0,
+        "friction": 0.4,
+        "restitution": 0.2
+      },
+      "behavior": {
+        "type": "chase"
+      }
+    }
+  ],
+  "sounds": [
+    {
+      "position": [0.0, 2.0, 0.0],
+      "file": "lava.ogg",
+      "volume": 0.4,
+      "looping": true,
+      "spatial": true
+    }
+  ],
+  "triggers": [
+    {
+      "pos": [12.0, 1.0, 12.0],
+      "size": [2.0, 2.0, 2.0],
+      "onEnter": "collect_key:blue"
+    },
+    {
+      "pos": [-12.0, 1.0, -12.0],
+      "size": [2.0, 2.0, 2.0],
+      "onEnter": "collect_key:green"
+    }
+  ],
+  "goals": {
+    "type": "extract",
+    "point": [0.0, 1.5, 12.0]
+  }
+}

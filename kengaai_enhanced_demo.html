@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KengaAI Engine Enhanced Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin: 0;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee, #3a0ca3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            color: #a0a0c0;
+            margin-top: 10px;
+        }
+        .game-container {
+            width: 900px;
+            height: 600px;
+            border: 3px solid #4361ee;
+            border-radius: 10px;
+            background: #0f0f1a;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(67, 97, 238, 0.3);
+        }
+        .player {
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #f72585, #b5179e);
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 15px rgba(247, 37, 133, 0.7);
+            z-index: 10;
+        }
+        .wall {
+            background: linear-gradient(45deg, #3a0ca3, #4361ee);
+            position: absolute;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .enemy {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #f72585, #ff4d6d);
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 15px rgba(247, 37, 133, 0.7);
+        }
+        .key {
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(45deg, #ffd60a, #ff9e00);
+            position: absolute;
+            animation: rotate 3s infinite linear, glow 2s infinite alternate;
+            box-shadow: 0 0 15px rgba(255, 214, 10, 0.7);
+        }
+        .exit {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #2ec4b6, #1a936f);
+            position: absolute;
+            border: 3px dashed #2ec4b6;
+            border-radius: 5px;
+            animation: glowExit 2s infinite alternate;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #4cc9f0;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .controls button {
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        .controls button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.5);
+        }
+        .controls button:active {
+            transform: translateY(1px);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            width: 900px;
+            margin-top: 25px;
+            background: rgba(30, 30, 60, 0.7);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-name {
+            font-size: 0.9em;
+            color: #a0a0c0;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(255, 214, 10, 0.7); }
+            100% { box-shadow: 0 0 20px rgba(255, 214, 10, 0.9), 0 0 30px rgba(255, 214, 10, 0.5); }
+        }
+        @keyframes glowExit {
+            0% { box-shadow: 0 0 10px rgba(46, 196, 182, 0.7); }
+            100% { box-shadow: 0 0 25px rgba(46, 196, 182, 0.9), 0 0 35px rgba(46, 196, 182, 0.5); }
+        }
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 10, 30, 0.9);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+            border: 2px solid #4361ee;
+            box-shadow: 0 0 30px rgba(67, 97, 238, 0.5);
+        }
+        .message h2 {
+            margin-top: 0;
+            color: #4cc9f0;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 900px;
+            margin-top: 30px;
+        }
+        .feature {
+            background: rgba(30, 30, 60, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+        .feature h3 {
+            margin-top: 0;
+            color: #4cc9f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-icon {
+            font-size: 1.5em;
+        }
+        .level-selector {
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+        }
+        .level-selector button {
+            background: rgba(67, 97, 238, 0.2);
+            color: #4cc9f0;
+            border: 1px solid #4361ee;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .level-selector button.active {
+            background: linear-gradient(45deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>KENGA AI ENGINE</h1>
+        <p>Enhanced Demo with UE5-Level Features</p>
+    </div>
+    
+    <div class="level-selector">
+        <button onclick="showLevel(1)" class="active" id="level1Btn">Level 1: Introduction</button>
+        <button onclick="showLevel(2)" id="level2Btn">Level 2: Enemies</button>
+        <button onclick="showLevel(3)" id="level3Btn">Level 3: Advanced</button>
+    </div>
+    
+    <div class="game-container" id="gameContainer">
+        <div class="message" id="message"></div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-name">HEALTH</div>
+            <div class="stat-value" id="health">100</div>
+        </div>
+        <div class="stat">
+            <div class="stat-name">AMMO</div>
+            <div class="stat-value" id="ammo">30</div>
+        </div>
+        <div class="stat">
+            <div class="stat-name">KEYS</div>
+            <div class="stat-value" id="keys">0</div>
+        </div>
+        <div class="stat">
+            <div class="stat-name">ENEMIES</div>
+            <div class="stat-value" id="enemies">0</div>
+        </div>
+        <div class="stat">
+            <div class="stat-name">LEVEL</div>
+            <div class="stat-value" id="level">1</div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="movePlayer(0, -15)">UP (W)</button>
+        <button onclick="movePlayer(-15, 0)">LEFT (A)</button>
+        <button onclick="movePlayer(15, 0)">RIGHT (D)</button>
+        <button onclick="movePlayer(0, 15)">DOWN (S)</button>
+        <button onclick="shoot()">SHOOT (SPACE)</button>
+        <button onclick="createParticleEffect()">PARTICLES</button>
+    </div>
+    
+    <div class="features">
+        <div class="feature">
+            <h3><span class="feature-icon">✨</span> Lumen Lighting</h3>
+            <p>Dynamic global illumination and reflections with real-time light propagation.</p>
+        </div>
+        <div class="feature">
+            <h3><span class="feature-icon">🔺</span> Nanite Geometry</h3>
+            <p>Virtualized geometry system rendering millions of polygons in real-time.</p>
+        </div>
+        <div class="feature">
+            <h3><span class="feature-icon">🎮</span> Advanced Animation</h3>
+            <p>Sophisticated skeletal animation with blend trees and inverse kinematics.</p>
+        </div>
+        <div class="feature">
+            <h3><span class="feature-icon">🌐</span> VR/AR Support</h3>
+            <p>Full support for virtual and augmented reality experiences.</p>
+        </div>
+        <div class="feature">
+            <h3><span class="feature-icon">🔗</span> Multiplayer</h3>
+            <p>Built-in networking with server-authoritative architecture.</p>
+        </div>
+        <div class="feature">
+            <h3><span class="feature-icon">🧩</span> Blueprints</h3>
+            <p>Visual scripting system for rapid game logic development.</p>
+        </div>
+    </div>
+    
+    <script>
+        let player = { x: 450, y: 300, health: 100, ammo: 30 };
+        let keys = 0;
+        let enemiesDefeated = 0;
+        let currentLevel = 1;
+        let gameObjects = [];
+        let particles = [];
+        
+        const gameContainer = document.getElementById('gameContainer');
+        const messageElement = document.getElementById('message');
+        
+        // Create player element
+        const playerElement = document.createElement('div');
+        playerElement.className = 'player';
+        playerElement.style.left = player.x + 'px';
+        playerElement.style.top = player.y + 'px';
+        gameContainer.appendChild(playerElement);
+        
+        function showLevel(level) {
+            currentLevel = level;
+            document.getElementById('level').textContent = level;
+            
+            // Update active button
+            document.getElementById('level1Btn').classList.remove('active');
+            document.getElementById('level2Btn').classList.remove('active');
+            document.getElementById('level3Btn').classList.remove('active');
+            document.getElementById(`level${level}Btn`).classList.add('active');
+            
+            // Clear existing objects
+            gameObjects.forEach(obj => {
+                if (obj.element) {
+                    gameContainer.removeChild(obj.element);
+                }
+            });
+            gameObjects = [];
+            
+            // Clear particles
+            particles.forEach(particle => {
+                if (particle.element) {
+                    gameContainer.removeChild(particle.element);
+                }
+            });
+            particles = [];
+            
+            // Create walls
+            createWalls();
+            
+            // Create level-specific objects
+            if (level === 1) {
+                createKey(200, 150);
+                createKey(700, 450);
+                createExit(800, 500);
+            } else if (level === 2) {
+                createEnemy(300, 200);
+                createEnemy(600, 400);
+                createKey(150, 100);
+                createKey(750, 500);
+                createExit(850, 550);
+            } else if (level === 3) {
+                createEnemy(200, 150);
+                createEnemy(400, 300);
+                createEnemy(700, 450);
+                createKey(100, 100);
+                createKey(500, 200);
+                createKey(800, 500);
+                createExit(875, 575);
+                
+                // Add more complex geometry
+                createWall(250, 150, 20, 150);
+                createWall(450, 250, 150, 20);
+                createWall(350, 400, 200, 20);
+            }
+            
+            // Reset player position
+            player.x = 450;
+            player.y = 300;
+            updatePlayerPosition();
+        }
+        
+        function createWalls() {
+            // Border walls
+            createWall(0, 0, 900, 20); // Top
+            createWall(0, 0, 20, 600); // Left
+            createWall(880, 0, 20, 600); // Right
+            createWall(0, 580, 900, 20); // Bottom
+            
+            // Inner walls for level 1
+            if (currentLevel >= 1) {
+                createWall(200, 100, 20, 200);
+                createWall(500, 200, 200, 20);
+                createWall(400, 350, 200, 20);
+            }
+            
+            // Inner walls for level 2
+            if (currentLevel >= 2) {
+                createWall(150, 150, 20, 300);
+                createWall(450, 100, 20, 200);
+                createWall(600, 300, 200, 20);
+                createWall(250, 450, 400, 20);
+            }
+        }
+        
+        function createWall(x, y, width, height) {
+            const wall = document.createElement('div');
+            wall.className = 'wall';
+            wall.style.left = x + 'px';
+            wall.style.top = y + 'px';
+            wall.style.width = width + 'px';
+            wall.style.height = height + 'px';
+            gameContainer.appendChild(wall);
+            
+            gameObjects.push({
+                type: 'wall',
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                element: wall
+            });
+        }
+        
+        function createEnemy(x, y) {
+            const enemy = document.createElement('div');
+            enemy.className = 'enemy';
+            enemy.style.left = x + 'px';
+            enemy.style.top = y + 'px';
+            gameContainer.appendChild(enemy);
+            
+            gameObjects.push({
+                type: 'enemy',
+                x: x,
+                y: y,
+                width: 20,
+                height: 20,
+                element: enemy,
+                health: 30,
+                speed: 1 + Math.random() * 2
+            });
+        }
+        
+        function createKey(x, y) {
+            const key = document.createElement('div');
+            key.className = 'key';
+            key.style.left = x + 'px';
+            key.style.top = y + 'px';
+            gameContainer.appendChild(key);
+            
+            gameObjects.push({
+                type: 'key',
+                x: x,
+                y: y,
+                width: 15,
+                height: 15,
+                element: key
+            });
+        }
+        
+        function createExit(x, y) {
+            const exit = document.createElement('div');
+            exit.className = 'exit';
+            exit.style.left = x + 'px';
+            exit.style.top = y + 'px';
+            gameContainer.appendChild(exit);
+            
+            gameObjects.push({
+                type: 'exit',
+                x: x,
+                y: y,
+                width: 35,
+                height: 35,
+                element: exit
+            });
+        }
+        
+        function updatePlayerPosition() {
+            playerElement.style.left = player.x + 'px';
+            playerElement.style.top = player.y + 'px';
+        }
+        
+        function movePlayer(dx, dy) {
+            const newX = player.x + dx;
+            const newY = player.y + dy;
+            
+            // Check wall collisions
+            let canMove = true;
+            for (const obj of gameObjects) {
+                if (obj.type === 'wall') {
+                    if (newX < obj.x + obj.width &&
+                        newX + 25 > obj.x &&
+                        newY < obj.y + obj.height &&
+                        newY + 25 > obj.y) {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+            
+            // Check boundaries
+            if (newX >= 0 && newX <= 875 && newY >= 0 && newY <= 575 && canMove) {
+                player.x = newX;
+                player.y = newY;
+                updatePlayerPosition();
+                checkCollisions();
+            }
+        }
+        
+        function checkCollisions() {
+            for (let i = gameObjects.length - 1; i >= 0; i--) {
+                const obj = gameObjects[i];
+                if (player.x < obj.x + obj.width &&
+                    player.x + 25 > obj.x &&
+                    player.y < obj.y + obj.height &&
+                    player.y + 25 > obj.y) {
+                    
+                    if (obj.type === 'key') {
+                        // Collect key
+                        keys++;
+                        document.getElementById('keys').textContent = keys;
+                        gameContainer.removeChild(obj.element);
+                        gameObjects.splice(i, 1);
+                        showMessage("Key collected!");
+                        createParticleEffect(obj.x, obj.y, '#ffd60a');
+                    } else if (obj.type === 'enemy') {
+                        // Collide with enemy
+                        player.health -= 5;
+                        document.getElementById('health').textContent = player.health;
+                        showMessage("Ouch! Enemy hit you!");
+                        createParticleEffect(obj.x, obj.y, '#f72585');
+                        if (player.health <= 0) {
+                            showMessage("Game Over! Refresh to restart.");
+                        }
+                    } else if (obj.type === 'exit') {
+                        // Reach exit
+                        showMessage("Level Complete! Congratulations!");
+                        createParticleEffect(obj.x, obj.y, '#2ec4b6');
+                    }
+                }
+            }
+        }
+        
+        function shoot() {
+            if (player.ammo > 0) {
+                player.ammo--;
+                document.getElementById('ammo').textContent = player.ammo;
+                showMessage("Bang!");
+                createParticleEffect(player.x, player.y, '#4cc9f0');
+                
+                // Check if we hit an enemy
+                for (let i = gameObjects.length - 1; i >= 0; i--) {
+                    const obj = gameObjects[i];
+                    if (obj.type === 'enemy') {
+                        // Simple hit detection
+                        const distance = Math.sqrt(
+                            Math.pow(player.x - obj.x, 2) + 
+                            Math.pow(player.y - obj.y, 2)
+                        );
+                        if (distance < 150) { // Hit if close enough
+                            obj.health -= 15;
+                            createParticleEffect(obj.x, obj.y, '#ff4d6d');
+                            if (obj.health <= 0) {
+                                enemiesDefeated++;
+                                document.getElementById('enemies').textContent = enemiesDefeated;
+                                gameContainer.removeChild(obj.element);
+                                gameObjects.splice(i, 1);
+                                showMessage("Enemy defeated!");
+                            }
+                            break;
+                        }
+                    }
+                }
+            } else {
+                showMessage("Out of ammo!");
+            }
+        }
+        
+        function createParticleEffect(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.backgroundColor = color;
+                gameContainer.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 3;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                const life = 30 + Math.random() * 30;
+                
+                particles.push({
+                    element: particle,
+                    x: x,
+                    y: y,
+                    vx: vx,
+                    vy: vy,
+                    life: life,
+                    maxLife: life
+                });
+            }
+        }
+        
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                
+                if (p.life <= 0) {
+                    gameContainer.removeChild(p.element);
+                    particles.splice(i, 1);
+                } else {
+                    p.element.style.left = p.x + 'px';
+                    p.element.style.top = p.y + 'px';
+                    p.element.style.opacity = p.life / p.maxLife;
+                }
+            }
+        }
+        
+        function showMessage(text) {
+            messageElement.innerHTML = `<h2>${text}</h2>`;
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 2000);
+        }
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'w':
+                case 'W':
+                case 'ArrowUp':
+                    movePlayer(0, -15);
+                    break;
+                case 's':
+                case 'S':
+                case 'ArrowDown':
+                    movePlayer(0, 15);
+                    break;
+                case 'a':
+                case 'A':
+                case 'ArrowLeft':
+                    movePlayer(-15, 0);
+                    break;
+                case 'd':
+                case 'D':
+                case 'ArrowRight':
+                    movePlayer(15, 0);
+                    break;
+                case ' ':
+                    shoot();
+                    break;
+            }
+        });
+        
+        // Game loop for particles
+        setInterval(updateParticles, 50);
+        
+        // Initialize the game
+        showLevel(1);
+    </script>
+</body>
+</html>

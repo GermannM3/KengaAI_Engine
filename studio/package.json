@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "set TAURI_SKIP_WINRES=1&& tauri build"
   },
   "dependencies": {
     "lucide-react": "0.441.0",

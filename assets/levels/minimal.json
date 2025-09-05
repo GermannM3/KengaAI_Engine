@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "schema": "KengaFPSSceneV0",
+    "version": "0.1.0",
+    "name": "minimal_test"
+  },
+  "render": {
+    "clearColor": [0.1, 0.2, 0.3, 1.0]
+  },
+  "player": {
+    "spawn": [0.0, 1.5, 4.0],
+    "yaw": 3.1415,
+    "pitch": 0.0,
+    "move": {
+      "speed": 4.5,
+      "run": 7.5
+    }
+  },
+  "level": {
+    "boxes": [
+      {
+        "pos": [0.0, 0.0, 0.0],
+        "size": [10.0, 0.5, 10.0],
+        "rotY": 0.0,
+        "color": [0.5, 0.5, 0.5]
+      },
+      {
+        "pos": [0.0, 1.0, -2.0],
+        "size": [1.0, 1.0, 1.0],
+        "rotY": 0.0,
+        "color": [1.0, 0.0, 0.0]
+      }
+    ],
+    "meshes": []
+  },
+  "lights": [],
+  "enemies": [],
+  "triggers": [],
+  "goals": null
+}

@@ -1,0 +1,30 @@
+node_modules
+
+# Rust build artifacts
+target/
+**/target/
+
+# Debug symbols and large files
+*.pdb
+*.rlib
+*.rmeta
+
+# Cargo lock files (optional, but recommended for libraries)
+# Cargo.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

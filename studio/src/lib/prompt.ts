@@ -16,7 +16,7 @@ export function buildFpsSystemPrompt(opts: {
 Стиль уровня: ${style}
 Имя уровня: ${levelName}
 
-СХЕМА:
+СЦЕНАРИЙ С ПОДДЕРЖКОЙ ТЕКСТУР:
 {
   "meta": { "schema": "KengaFPSSceneV0", "version": "0.1.0", "name": "level_name" },
   "render": { "clearColor": [r,g,b,a] },
@@ -26,7 +26,7 @@ export function buildFpsSystemPrompt(opts: {
   ],
   "level": {
     "boxes": [
-      { "pos": [x,y,z], "size": [sx,sy,sz], "rotY": 0.0, "color": [r,g,b] }
+      { "pos": [x,y,z], "size": [sx,sy,sz], "rotY": 0.0, "color": [r,g,b], "texture": "crate.png" }
     ]
   },
   "enemies": [

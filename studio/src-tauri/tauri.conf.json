@@ -21,8 +21,7 @@
   "bundle": {
     "active": true,
     "targets": ["msi", "dmg", "appimage", "deb"],
-    "identifier": "com.kengaai.studio",
-    "icon": [],
+    "icon": ["icons/icon.png"],
     "windows": {
       "wix": {
         "language": "ru-RU",
@@ -33,3 +32,4 @@
     }
   }
 }
+

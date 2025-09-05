@@ -1,0 +1,36 @@
+{
+  "version": 3,
+  "middleware": {},
+  "functions": {
+    "/api/neural-test/route": {
+      "files": [
+        "server/server-reference-manifest.js",
+        "server/app/api/neural-test/route_client-reference-manifest.js",
+        "server/middleware-build-manifest.js",
+        "server/middleware-react-loadable-manifest.js",
+        "server/next-font-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/edge-runtime-webpack.js",
+        "server/app/api/neural-test/route.js"
+      ],
+      "name": "app/api/neural-test/route",
+      "page": "/api/neural-test/route",
+      "matchers": [
+        {
+          "regexp": "^/api/neural\\-test$",
+          "originalSource": "/api/neural-test"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "Ge5x8NgU2U5F3vw_PHMzN",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "6I6BknkVRvxbbQdxG6dqlTy6BhrsBGv9atA9EaikaKw=",
+        "__NEXT_PREVIEW_MODE_ID": "8de8cd95699c3450f7b3f0847b3f1f29",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "301f2835615273df077ab70a49bb003687127e88d5392b8c66d16c5bc607423f",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "4c60587f9acb36de52152e36eb68639a647717ea6a8458e108d91c19a9d24c36"
+      }
+    }
+  },
+  "sortedMiddleware": []
+}
