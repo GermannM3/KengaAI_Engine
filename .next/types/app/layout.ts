@@ -1,4 +1,4 @@
-// File: D:\KengaAI_Engine\app\layout.tsx
+// File: /home/germannm/Документы/KengaAI_Engine/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

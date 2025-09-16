@@ -1,166 +1,97 @@
-# KengaAI Engine Ultimate
+# KengaAI Engine
 
-## The Next Generation Game Engine
-
-KengaAI Engine - это современный 3D игровой движок, разработанный на языке Rust с использованием графической библиотеки wgpu. Движок предоставляет возможности, сопоставимые с Unreal Engine 5, с рядом преимуществ в безопасности и производительности.
+Современный 3D-игровой движок на Rust и wgpu, созданный для высокой производительности и безопасности.
 
 ![KengaAI Engine](assets/logo.svg)
 
-## Особенности движка
+## 🚀 Основные возможности
 
-### 🚀 Производительность и безопасность
-- **Rust** - безопасность памяти без потери производительности
-- **WebGPU (wgpu)** - современный графический API
-- **Многопоточность** - оптимизация для современных процессоров
+- **Графика**: рендеринг на wgpu (Vulkan/Metal/DX12/OpenGL), динамическое освещение, PBR-материалы (в разработке).
+- **Физика**: интеграция с `rapier3d`.
+- **Звук**: пространственный звук через `rodio`.
+- **Кроссплатформенность**: поддержка Windows, Linux, macOS.
+- **Безопасность**: безопасность памяти благодаря Rust.
 
-### ✨ Графика уровня UE5
-- **Lumen Lighting** - динамическое глобальное освещение
-- **Nanite Geometry** - виртуализированная геометрия
-- **Пост-обработка** - bloom, HDR, anti-aliasing
-- **Система частиц** - для визуальных эффектов
-- **PBR материалы** - физически корректный рендеринг
+## 🛠️ Состав проекта
 
-### 🎮 Полный набор инструментов
-- **Физика** - интеграция с rapier3d
-- **Звук** - пространственный звук с rodio
-- **ИИ** - система поведения NPC
-- **Анимация** - скелетная анимация
-- **Мультиплеер** - встроенная поддержка
+- `crates/`: исходный код движка, разделенный на модули (крейты).
+  - `fps/`: основной модуль рендеринга.
+  - `scene_fps/`: загрузка и управление сценами в формате JSON.
+  - `model_loader/`: загрузчик 3D-моделей (например, `.obj`).
+- `demos/`: примеры использования движка.
+  - `kengaai-demo-fps`: демонстрация FPS-механик.
+  - `kengaquest`: небольшая демо-игра.
+- `studio/`: нативное приложение-редактор уровней на Tauri и React.
+- `assets/`: игровые ресурсы (3D-модели, текстуры, уровни).
 
-### 🛠️ Инструменты разработки
-- **Визуальный редактор** - Tauri/React
-- **Blueprints** - визуальное программирование
-- **Отладка** - инструменты профилирования
+## 🖥️ Системные требования
 
-## Демонстрации
+### Минимальные:
+- **ОС**: ALT Linux 11+, Ubuntu 22.04+, Windows 10/11
+- **Процессор**: x86-64 с поддержкой SSE4.2
+- **Память**: 8GB RAM
+- **Графика**: GPU с поддержкой Vulkan 1.1+ или OpenGL 4.3+ (NVIDIA GTX 1050 / AMD RX 550)
 
-### KengaQuest - демо-игра
-Откройте `kengaquest_ultimate.html` в браузере для полной демонстрации возможностей движка.
+### Рекомендуемые:
+- **Графика**: NVIDIA RTX 3060 / AMD RX 6600 или лучше
+- **Память**: 16GB+ RAM
 
-Управление:
-- WASD - движение
-- Пробел - стрельба
-- F - фонарик
+## ⚙️ Установка и запуск (ALT Linux)
 
-### Другие демонстрации
-- `kengaquest_demo.html` - упрощенная версия
-- `kengaquest_text.py` - текстовая версия на Python
+### 1. Установка системных зависимостей
 
-## Начало работы
-
-### Установка
-1. Установите Rust toolchain: https://rustup.rs/
-2. Установите Visual Studio Build Tools
-3. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/your-repo/kengaai-engine.git
-   cd kengaai-engine
-   ```
-
-### Запуск демонстраций
 ```bash
-# Запуск HTML-демо
-open kengaquest_ultimate.html
+# Для движка (wgpu, winit, rodio)
+sudo apt-get install -y libX11-devel libXcursor-devel libXi-devel libXrandr-devel libxkbcommon-devel libalsa-devel vulkan-loader-devel
 
-# Запуск текстовой версии
-python kengaquest_text.py
-
-# Запуск полной версии (требует установленных зависимостей)
-cargo run -p kengaquest --release -- assets/levels/kengaquest_main.json
+# Для нативной студии (Tauri)
+sudo apt-get install -y pkg-config gcc make glib2-devel libgtk+3-devel libwebkit2gtk4.1-devel libjavascriptcoregtk4.1-devel libcairo-devel libpango-devel libgdk-pixbuf-devel libatk-devel libappindicator-devel
 ```
 
-## Структура проекта
-
-```
-kengaai-engine/
-├── crates/
-│   ├── scene_fps/          # Загрузка и управление сценами
-│   ├── fps/                # Основной движок рендеринга
-│   └── ...
-├── demos/
-│   ├── fps/                # Демо FPS
-│   └── kengaquest/         # Демонстрационная игра
-├── assets/
-│   ├── levels/             # JSON файлы уровней
-│   ├── textures/           # Текстуры
-│   └── sounds/             # Звуковые файлы
-├── studio/                 # Редактор уровней (Tauri/React)
-└── ...
-```
-
-## Документация
-
-- `DEVELOPER_GUIDE.md` - руководство для разработчиков
-- `FINAL_REPORT_ENHANCED.md` - финальный отчет о разработке
-- `presentation.html` - презентация возможностей движка
-
-## Сравнение с Unreal Engine 5
-
-| Характеристика | Unreal Engine 5 | KengaAI Engine |
-|----------------|-----------------|----------------|
-| Язык программирования | C++ | Rust |
-| Графический API | DirectX 12, Vulkan, Metal | WebGPU (wgpu) |
-| Безопасность памяти | Ограниченная | Гарантированная |
-| Производительность | Отличная | Превосходная |
-| Кривая обучения | Высокая | Средняя |
-| Настраиваемость | Хорошая | Отличная |
-| Открытый исходный код | Частично | Полностью |
-
-## Лицензирование
-
-KengaAI Engine распространяется под лицензией MIT. См. файл LICENSE для подробностей.
-
-## Поддержка
-
-- Документация: https://kengaai.github.io/docs
-- GitHub: https://github.com/your-repo/kengaai-engine
-- Discord: https://discord.gg/kengaai
-- Форум: https://community.kengaai.com
-
-## Совместимость
-
-### Поддерживаемые платформы
-- Windows 10/11
-- macOS 10.15+
-- Linux (Ubuntu 20.04+, Fedora 32+)
-
-### Системные требования
-**Рекомендуемые:**
-- Процессор: Intel Core i7 или AMD Ryzen 7
-- ОЗУ: 16 ГБ
-- Видеокарта: DirectX 12 совместимая
-- Место на диске: 5 ГБ
-
-## Разработка
-
-Для разработчиков движка доступны все исходные коды. Мы приветствуем вклад сообщества в развитие проекта.
-
-### Сборка проекта
+### 2. Установка Rust
+Рекомендуется использовать `rustup`:
 ```bash
-# Проверка сборки
-cargo check
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+rustup component add rust-src # для rust-analyzer
+```
+Если `rustup` недоступен, установите из репозитория: `sudo apt-get install rust rust-cargo rust-src`.
 
-# Сборка разработческой версии
-cargo build
+### 3. Сборка и запуск
 
-# Сборка релизной версии
+```bash
+# Клонирование репозитория
+git clone https://github.com/your-repo/kengaai-engine.git
+cd kengaai-engine
+
+# Сборка проекта
 cargo build --release
 
-# Запуск тестов
-cargo test
+# Запуск FPS-демо
+cargo run --release -p kengaai-demo-fps
 ```
 
-## Контрибуция
+##  studio: Нативный редактор уровней
 
-Мы приветствуем контрибуции! Пожалуйста, ознакомьтесь с CONTRIBUTING.md перед отправкой pull request.
+Студия — это отдельное десктоп-приложение для создания и редактирования JSON-файлов уровней.
 
-## Благодарности
+### Запуск в режиме разработки
 
-- Сообществу Rust за отличный язык программирования
-- wgpu разработчикам за WebGPU реализацию
-- rapier3d и rodio командам за отличные библиотеки
-- Всем участникам проекта
+```bash
+# Установка зависимостей и запуск UI
+cd studio
+npm install
+
+# В первом терминале: запустить Vite dev server
+npm run dev
+
+# Во втором терминале: запустить Tauri
+npm run tauri:dev
+```
+
+## 🤝 Вклад в проект
+
+Мы приветствуем любой вклад! Пожалуйста, ознакомьтесь с `DEVELOPER_GUIDE.md` и создавайте Pull Request'ы.
 
 ---
-
-*© 2025 KengaAI Team. Все права защищены.*
+*© 2025 KengaAI Team*

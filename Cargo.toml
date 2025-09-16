@@ -2,6 +2,7 @@
 members = [
   "crates/scene_fps",
   "crates/fps",
+  "crates/model_loader",
   "demos/fps",
   "demos/kengaquest",
   "demos/simple_test",

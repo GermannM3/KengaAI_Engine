@@ -2,6 +2,12 @@
 name = "kengaai-fps"
 version = "0.1.0"
 edition = "2021"
+description = "The core FPS rendering and logic crate for the KengaAI Engine."
+license = "MIT"
+repository = "https://github.com/your-repo/kengaai-engine"
+readme = "../../README.md"
+keywords = ["gamedev", "kengaai", "engine", "fps", "wgpu"]
+categories = ["game-engines"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -11,7 +17,8 @@ winit = { workspace = true }
 pollster = { workspace = true }
 bytemuck = { workspace = true }
 glam = { workspace = true }
-kengaai-scene-fps = { path = "../scene_fps" }
+kengaai-scene-fps = { path = "../scene_fps", version = "0.1.0" }
+kengaai-model-loader = { path = "../model_loader", version = "0.1.0" }
 image = "0.24"
 rapier3d = "0.17"
 rodio = "0.17"

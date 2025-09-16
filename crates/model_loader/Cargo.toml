@@ -1,0 +1,20 @@
+[package]
+name = "kengaai-model-loader"
+version = "0.1.0"
+edition = "2021"
+description = "A simple .obj model loader for the KengaAI Engine."
+license = "MIT"
+repository = "https://github.com/your-repo/kengaai-engine"
+readme = "../../../README.md"
+keywords = ["gamedev", "kengaai", "graphics", "obj"]
+categories = ["game-development", "rendering::data-formats"]
+
+[dependencies]
+anyhow = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+glam = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"

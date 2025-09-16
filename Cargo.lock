@@ -758,6 +758,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "fastrand"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
+
+[[package]]
 name = "fdeflate"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -915,6 +921,18 @@ dependencies = [
  "thiserror",
  "winapi",
  "windows 0.52.0",
+]
+
+[[package]]
+name = "gpu-compatibility-test"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "env_logger",
+ "kengaai-fps",
+ "kengaai-scene-fps",
+ "log",
+ "winit",
 ]
 
 [[package]]
@@ -1146,6 +1164,7 @@ dependencies = [
  "bytemuck",
  "glam",
  "image",
+ "kengaai-model-loader",
  "kengaai-scene-fps",
  "log",
  "pollster",
@@ -1153,6 +1172,18 @@ dependencies = [
  "rodio",
  "wgpu",
  "winit",
+]
+
+[[package]]
+name = "kengaai-model-loader"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "glam",
+ "log",
+ "serde",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]
@@ -2270,6 +2301,19 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tempfile"
+version = "3.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "84fa4d11fadde498443cca10fd3ac23c951f0dc59e080e9f4b93d4df4e4eea53"
+dependencies = [
+ "fastrand",
+ "getrandom",
+ "once_cell",
+ "rustix 1.0.8",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]

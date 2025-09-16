@@ -41,8 +41,15 @@ fn main() -> Result<()> {
     // Load textures for boxes that have them
     for box_def in &scene.level.boxes {
         if let Some(ref texture_path) = box_def.texture {
-            // Try to load the texture from the scene directory
-            let full_path = scene_dir.join(texture_path);
+            // Try to load the texture from the textures directory first
+            let textures_path = Path::new("assets/textures").join(texture_path);
+            let full_path = if textures_path.exists() {
+                textures_path
+            } else {
+                // Fallback to scene directory
+                scene_dir.join(texture_path)
+            };
+            
             if full_path.exists() {
                 let texture_name = texture_path.clone();
                 if let Err(e) = renderer.load_texture_from_file(texture_name, &full_path) {
@@ -55,7 +62,7 @@ fn main() -> Result<()> {
     }
     
     // Load floor texture if it exists
-    let floor_texture_path = scene_dir.join("floor.png");
+    let floor_texture_path = Path::new("assets/textures/floor.png");
     if floor_texture_path.exists() {
         if let Err(e) = renderer.load_texture_from_file("floor.png".to_string(), &floor_texture_path) {
             error!("Failed to load floor texture: {}", e);

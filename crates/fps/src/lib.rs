@@ -2,7 +2,8 @@ use anyhow::Result;
 use bytemuck::{Pod, Zeroable};
 use glam::{Mat4, Vec2, Vec3};
 use kengaai_scene_fps::{BoxDef, FpsScene};
-use log::info;
+// use kengaai_model_loader::{Model, Vertex as ModelVertex};
+use log::{error, info};
 use wgpu::util::DeviceExt;
 use winit::window::Window;
 
@@ -149,7 +150,7 @@ impl Camera {
     }
 
     pub fn proj(&self, aspect: f32) -> Mat4 {
-        Mat4::perspective_rh_gl(self.fov_y.to_radians(), aspect, self.z_near, self.z_far)
+        Mat4::perspective_rh(self.fov_y.to_radians(), aspect, self.z_near, self.z_far)
     }
 
     pub fn dir(yaw: f32, pitch: f32) -> Vec3 {
@@ -161,22 +162,84 @@ impl Camera {
 
 impl<'w> FpsRenderer<'w> {
     pub fn new(window: &'w Window, scene: &FpsScene) -> Result<Self> {
+        println!("🎮 Начинаем инициализацию FPS рендерера...");
+        info!("🎮 Инициализация FPS рендерера...");
+        info!("📊 Сцена: {} объектов", scene.level.boxes.len());
+        info!("💡 Освещение: {} источников", scene.lights.len());
+        println!("🔄 Вызываем new_async...");
         pollster::block_on(Self::new_async(window, scene))
     }
 
     async fn new_async(window: &'w Window, scene: &FpsScene) -> Result<Self> {
+        println!("🚀 new_async запущен!");
         let size = window.inner_size();
-        let instance = wgpu::Instance::default();
+        println!("📐 Размер окна: {}x{}", size.width, size.height);
+        info!("📐 Размер окна: {}x{}", size.width, size.height);
+
+        // Выбор backend: по умолчанию Vulkan с fallback на GL (можно переопределить WGPU_BACKEND)
+        let backends = match std::env::var("WGPU_BACKEND").ok().as_deref() {
+            Some("vulkan") | Some("VULKAN") => wgpu::Backends::VULKAN,
+            Some("gl") | Some("GL") => wgpu::Backends::GL,
+            _ => wgpu::Backends::VULKAN | wgpu::Backends::GL,
+        };
+        println!("🎨 Предпочтительный backend: {:?}", backends);
+        info!("🎨 WebGPU instance (preferred backends: {:?})", backends);
+
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends,
+            ..Default::default()
+        });
+        println!("✅ Instance создан успешно!");
+        info!("✅ WebGPU instance создан, backends: {:?}", backends);
+
+        // Создаём реальную surface (окно) и просим адаптер, совместимый с ней
         let surface = instance.create_surface(window)?;
-        let adapter = instance
+        
+        println!("🔍 Запрашиваем adapter (high performance)...");
+        let mut adapter = instance
             .request_adapter(&wgpu::RequestAdapterOptions {
                 power_preference: wgpu::PowerPreference::HighPerformance,
                 compatible_surface: Some(&surface),
                 force_fallback_adapter: false,
             })
-            .await
-            .expect("No adapter");
+            .await;
+        println!("✅ Adapter запрос завершен!");
+        
+        if let Some(ref adapter) = adapter {
+            let info = adapter.get_info();
+            println!("🎮 Найден адаптер: {} ({:?})", info.name, info.backend);
+        } else {
+            println!("❌ High performance адаптер не найден!");
+        }
+
+        // Если не получилось, попробуем fallback
+        if adapter.is_none() {
+            info!("⚠️ High performance адаптер не найден, пробуем fallback...");
+            adapter = instance
+                .request_adapter(&wgpu::RequestAdapterOptions {
+                    power_preference: wgpu::PowerPreference::LowPower,
+                    compatible_surface: Some(&surface),
+                    force_fallback_adapter: true,
+                })
+                .await;
+        }
+
+        let adapter = adapter.expect("❌ Не найден подходящий GPU адаптер!");
+
+        // Информация об адаптере
+        let adapter_info = adapter.get_info();
+        info!("🎮 Найден адаптер: {}", adapter_info.name);
+        info!("📦 Backend: {:?}", adapter_info.backend);
+        info!("🆔 Device: {}", adapter_info.device);
+        info!("🏭 Vendor: {}", adapter_info.vendor);
+        info!("🔧 Device type: {:?}", adapter_info.device_type);
+
         let required_limits = adapter.limits();
+        info!("📊 Лимиты GPU: max_buffer_size={}MB, max_texture_dimension_2d={}",
+              required_limits.max_buffer_size / (1024 * 1024),
+              required_limits.max_texture_dimension_2d);
+
+        println!("🔧 Запрашиваем device и queue...");
         let (device, queue) = adapter
             .request_device(
                 &wgpu::DeviceDescriptor {
@@ -187,38 +250,60 @@ impl<'w> FpsRenderer<'w> {
                 None,
             )
             .await?;
-        let caps = surface.get_capabilities(&adapter);
-        let format = caps.formats.iter().copied().find(|f| f.is_srgb()).unwrap_or(caps.formats[0]);
-        let present_mode = wgpu::PresentMode::Fifo;
-        let alpha_mode = caps.alpha_modes[0];
+        println!("✅ Device и queue созданы успешно!");
 
-        let mut config = wgpu::SurfaceConfiguration {
+        info!("✅ Устройство и очередь созданы");
+
+        // Конфигурируем surface для отображения на экран
+        let caps = surface.get_capabilities(&adapter);
+        let format = if caps.formats.is_empty() {
+            wgpu::TextureFormat::Bgra8UnormSrgb
+        } else {
+            caps.formats.iter().copied().find(|f| f.is_srgb()).unwrap_or(caps.formats[0])
+        };
+        
+        let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
             format,
             width: size.width.max(1),
             height: size.height.max(1),
-            present_mode,
-            alpha_mode,
+            present_mode: wgpu::PresentMode::Fifo,
+            alpha_mode: if caps.alpha_modes.is_empty() {
+                wgpu::CompositeAlphaMode::Opaque
+            } else {
+                caps.alpha_modes[0]
+            },
             view_formats: vec![],
             desired_maximum_frame_latency: 2,
         };
         surface.configure(&device, &config);
+        println!("🖼️ Surface сконфигурирован: {}x{} {:?}", config.width, config.height, config.format);
+        info!("✅ Экранный рендер настроен");
 
         // depth
-        let (depth_tex, depth_view) = create_depth(&device, config.width, config.height);
+        println!("🗂️ Создаем depth buffer...");
+        let (depth_tex, depth_view) = create_depth(&device, size.width, size.height);
+        println!("✅ Depth buffer создан успешно!");
+        info!("🗂️ Depth buffer создан: {}x{}", size.width, size.height);
 
         // pipeline
+        println!("🔧 Создаем шейдерный модуль...");
         let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("lighting"),
             source: wgpu::ShaderSource::Wgsl(include_str!("../shaders/lighting_simple.wgsl").into()),
         });
+        println!("✅ Шейдерный модуль создан успешно!");
+        info!("✅ Шейдерный модуль создан");
 
+        println!("📋 Создаем vertex buffer layout...");
         let v_layout = wgpu::VertexBufferLayout {
             array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Vertex,
             attributes: &wgpu::vertex_attr_array![0=>Float32x3,1=>Float32x3,2=>Float32x2],
         };
+        println!("✅ Vertex buffer layout создан!");
 
+        println!("📋 Создаем instance buffer layout...");
         let i_layout = wgpu::VertexBufferLayout {
             array_stride: std::mem::size_of::<Instance>() as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Instance,
@@ -229,7 +314,9 @@ impl<'w> FpsRenderer<'w> {
                 6=>Float32x3  // color
             ],
         };
+        println!("✅ Instance buffer layout создан!");
 
+        println!("📋 Создаем camera bind group layout...");
         let cam_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("cam-layout"),
             entries: &[wgpu::BindGroupLayoutEntry{
@@ -243,8 +330,10 @@ impl<'w> FpsRenderer<'w> {
                 count: None
             }],
         });
+        println!("✅ Camera bind group layout создан!");
 
         // Create texture bind group layout
+        println!("📋 Создаем texture bind group layout...");
         let texture_bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             label: Some("texture_bind_group_layout"),
             entries: &[
@@ -266,6 +355,7 @@ impl<'w> FpsRenderer<'w> {
                 },
             ],
         });
+        println!("✅ Texture bind group layout создан!");
 
         // Create texture sampler
         let texture_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
@@ -336,18 +426,22 @@ impl<'w> FpsRenderer<'w> {
 
         // buffers
         let verts = cube_vertices();
+        info!("📐 Создание вершинного буфера: {} вершин", verts.len());
         let vbo = device.create_buffer_init(&wgpu::util::BufferInitDescriptor{
             label: Some("vbo"),
             contents: bytemuck::cast_slice(&verts),
             usage: wgpu::BufferUsages::VERTEX
         });
+        info!("✅ Вершинный буфер создан");
 
         let instances: Vec<Instance> = scene.level.boxes.iter().map(Instance::from).collect();
+        info!("🎭 Создание инстанс буфера: {} объектов", instances.len());
         let inst_buf = device.create_buffer_init(&wgpu::util::BufferInitDescriptor{
             label: Some("inst"),
             contents: bytemuck::cast_slice(&instances),
             usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST
         });
+        info!("✅ Инстанс буфер создан");
 
         // camera
         let camera = Camera {
@@ -358,7 +452,7 @@ impl<'w> FpsRenderer<'w> {
             z_near: 0.1,
             z_far: 200.0,
         };
-        let vp = camera.proj(config.width as f32 / config.height as f32) * camera.view();
+        let vp = camera.proj(1280.0 / 720.0) * camera.view();
         let cam_buf = device.create_buffer_init(&wgpu::util::BufferInitDescriptor{
             label: Some("cam-ubo"),
             contents: bytemuck::bytes_of(&CameraUBO{ view_proj: vp.to_cols_array_2d() }),
@@ -411,10 +505,67 @@ impl<'w> FpsRenderer<'w> {
             entries: &[wgpu::BindGroupEntry{ binding:0, resource: lights_buf.as_entire_binding() }],
         });
 
-        // Initialize textures map
-        let textures = std::collections::HashMap::new();
+        // Initialize textures map with default white texture
+        info!("🎨 Создание текстур...");
+        let mut textures = std::collections::HashMap::new();
 
-        info!("FPS renderer ready: {}x{}", config.width, config.height);
+        // Create default white texture (1x1 pixel white)
+        let white_texture = device.create_texture(&wgpu::TextureDescriptor {
+            label: Some("default_white_texture"),
+            size: wgpu::Extent3d {
+                width: 1,
+                height: 1,
+                depth_or_array_layers: 1,
+            },
+            mip_level_count: 1,
+            sample_count: 1,
+            dimension: wgpu::TextureDimension::D2,
+            format: wgpu::TextureFormat::Rgba8UnormSrgb,
+            usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST,
+            view_formats: &[],
+        });
+
+        queue.write_texture(
+            wgpu::ImageCopyTexture {
+                texture: &white_texture,
+                mip_level: 0,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            &[255, 255, 255, 255], // White RGBA
+            wgpu::ImageDataLayout {
+                offset: 0,
+                bytes_per_row: Some(4),
+                rows_per_image: Some(1),
+            },
+            wgpu::Extent3d {
+                width: 1,
+                height: 1,
+                depth_or_array_layers: 1,
+            },
+        );
+
+        let white_texture_view = white_texture.create_view(&wgpu::TextureViewDescriptor::default());
+        let default_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: Some("default_texture_bind_group"),
+            layout: &texture_bind_group_layout,
+            entries: &[
+                wgpu::BindGroupEntry {
+                    binding: 0,
+                    resource: wgpu::BindingResource::TextureView(&white_texture_view),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 1,
+                    resource: wgpu::BindingResource::Sampler(&texture_sampler),
+                },
+            ],
+        });
+
+        textures.insert("default_white".to_string(), (white_texture, default_bind_group));
+        info!("✅ Текстуры инициализированы");
+
+        info!("🎉 FPS рендерер полностью готов: {}x{} (onscreen)", config.width, config.height);
+        info!("📊 Статистика: {} объектов, {} источников света", scene.level.boxes.len(), scene.lights.len());
 
         Ok(Self{
             surface,
@@ -494,19 +645,38 @@ impl<'w> FpsRenderer<'w> {
         self.queue.write_buffer(&self.lights_buf, 0, bytemuck::bytes_of(&lights_raw));
     }
 
+    /// Рендеринг сцены (на экран)
     pub fn render(&mut self) -> Result<()> {
-        info!("Начало отрисовки кадра");
-        
+        info!("🎨 Начало отрисовки кадра - FpsRenderer (onscreen)");
+
         let frame = match self.surface.get_current_texture() {
-            Ok(f) => f,
-            Err(_) => {
+            Ok(frame) => frame,
+            Err(err) => {
+                error!("Surface error: {:?}. Реконфигурируем...", err);
                 self.surface.configure(&self.device, &self.config);
                 self.surface.get_current_texture()?
             }
         };
-        
-        info!("Получен кадровый буфер");
         let view = frame.texture.create_view(&wgpu::TextureViewDescriptor::default());
+
+        // Создаем дефолтный инстанс буфер заранее если нужно
+        let default_instance_buffer = if self.instances.is_empty() {
+            info!("⚠️ Создаем дефолтный инстанс буфер заранее");
+            Some(self.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("default_instance_render"),
+                contents: bytemuck::bytes_of(&Instance {
+                    pos: [0.0, 0.0, 0.0],
+                    scale: [1.0, 1.0, 1.0],
+                    rot_y: 0.0,
+                    color: [1.0, 1.0, 1.0],
+                    _pad: 0.0,
+                }),
+                usage: wgpu::BufferUsages::VERTEX,
+            }))
+        } else {
+            None
+        };
+
         let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor{ label: Some("encoder") });
 
         {
@@ -530,23 +700,113 @@ impl<'w> FpsRenderer<'w> {
             info!("Установка pipeline и bind groups");
             rp.set_pipeline(&self.pipeline);
             rp.set_bind_group(0, &self.cam_bind, &[]);
-            // Set default texture bind group (white texture) if no textures are loaded
-            if let Some((_, ref bind_group)) = self.textures.values().next() {
+
+            // Always set texture bind group - use default white if no textures loaded
+            if let Some((_, ref bind_group)) = self.textures.get("default_white") {
                 rp.set_bind_group(1, bind_group, &[]);
+                info!("Используется текстура по умолчанию");
+            } else if let Some((_, ref bind_group)) = self.textures.values().next() {
+                rp.set_bind_group(1, bind_group, &[]);
+                info!("Используется загруженная текстура");
+            } else {
+                error!("Критическая ошибка: нет доступных текстур!");
+                return Ok(());
             }
+
             rp.set_bind_group(2, &self.lights_bind, &[]);
             
             info!("Отрисовка геометрии: {} инстансов", self.instances.len());
             rp.set_vertex_buffer(0, self.vbo.slice(..));
+
+            // Используем созданный заранее буфер или существующий
+            if let Some(ref buffer) = default_instance_buffer {
+                info!("✅ Используем дефолтный инстанс буфер");
+                rp.set_vertex_buffer(1, buffer.slice(..));
+                rp.draw(0..36, 0..1);
+            } else {
+                info!("✅ Используем существующий инстанс буфер: {} объектов", self.instances.len());
             rp.set_vertex_buffer(1, self.inst_buf.slice(..));
             rp.draw(0..36, 0..self.instances.len() as u32);
+            }
         }
 
-        info!("Отправка команд и представление кадра");
+        info!("Отправка команд (onscreen)");
         self.queue.submit([encoder.finish()]);
         frame.present();
-        
-        info!("Кадр отрисован успешно");
+
+        info!("✅ Кадр отрисован успешно (onscreen)");
+        Ok(())
+    }
+
+    /// Рендеринг простого куба для тестирования
+    pub fn render_test_cube(&mut self) -> Result<()> {
+        info!("🎨 Рендеринг тестового куба (onscreen)");
+
+        // Создаем инстанс буфер заранее (вне render pass scope)
+        let default_instance = Instance {
+            pos: [0.0, 0.0, 0.0],
+            scale: [1.0, 1.0, 1.0],
+            rot_y: 0.0,
+            color: [1.0, 1.0, 1.0],
+            _pad: 0.0,
+        };
+        let instance_buffer = self.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("default_instance"),
+            contents: bytemuck::bytes_of(&default_instance),
+            usage: wgpu::BufferUsages::VERTEX,
+        });
+
+        let frame = self.surface.get_current_texture()?;
+        let view = frame.texture.create_view(&wgpu::TextureViewDescriptor::default());
+        let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor{
+            label: Some("test_cube_encoder")
+        });
+
+        {
+            let mut rp = encoder.begin_render_pass(&wgpu::RenderPassDescriptor{
+                label: Some("test_cube_pass"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment{
+                    view: &view,
+                    resolve_target: None,
+                    ops: wgpu::Operations{
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
+                        store: wgpu::StoreOp::Store
+                    },
+                })],
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment{
+                    view: &self.depth_view,
+                    depth_ops: Some(wgpu::Operations{
+                        load: wgpu::LoadOp::Clear(1.0),
+                        store: wgpu::StoreOp::Store
+                    }),
+                    stencil_ops: None,
+                }),
+                occlusion_query_set: None,
+                timestamp_writes: None,
+            });
+
+            // Используем уже созданный буфер вершин куба
+            rp.set_pipeline(&self.pipeline);
+            rp.set_bind_group(0, &self.cam_bind, &[]);
+
+            // Используем белую текстуру по умолчанию
+            if let Some((_, ref bind_group)) = self.textures.get("default_white") {
+                rp.set_bind_group(1, bind_group, &[]);
+            }
+
+            rp.set_bind_group(2, &self.lights_bind, &[]);
+            rp.set_vertex_buffer(0, self.vbo.slice(..));
+            rp.set_vertex_buffer(1, instance_buffer.slice(..));
+
+            // Рисуем куб (36 вершин для 12 треугольников, 1 инстанс)
+            rp.draw(0..36, 0..1);
+        }
+
+        info!("📤 Отправка команд рендеринга куба");
+        self.queue.submit([encoder.finish()]);
+        frame.present();
+
+        info!("✅ Куб отрендерен (onscreen)");
         Ok(())
     }
 

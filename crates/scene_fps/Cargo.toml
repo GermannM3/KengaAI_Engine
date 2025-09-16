@@ -2,6 +2,12 @@
 name = "kengaai-scene-fps"
 version = "0.1.0"
 edition = "2021"
+description = "Provides structures and functions for loading KengaAI Engine FPS scenes."
+license = "MIT"
+repository = "https://github.com/your-repo/kengaai-engine"
+readme = "../../../README.md"
+keywords = ["gamedev", "kengaai", "scene"]
+categories = ["game-development"]
 
 [dependencies]
 serde = { workspace = true }
