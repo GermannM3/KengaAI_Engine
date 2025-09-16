@@ -5,7 +5,7 @@ edition = "2021"
 description = "Provides structures and functions for loading KengaAI Engine FPS scenes."
 license = "MIT"
 repository = "https://github.com/your-repo/kengaai-engine"
-readme = "../../../README.md"
+readme = "../../README.md"
 keywords = ["gamedev", "kengaai", "scene"]
 categories = ["game-development"]
 

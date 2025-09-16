@@ -5,7 +5,7 @@ edition = "2021"
 description = "A simple .obj model loader for the KengaAI Engine."
 license = "MIT"
 repository = "https://github.com/your-repo/kengaai-engine"
-readme = "../../../README.md"
+readme = "../../README.md"
 keywords = ["gamedev", "kengaai", "graphics", "obj"]
 categories = ["game-development", "rendering::data-formats"]
 
