@@ -1,79 +1,49 @@
 import os
-import subprocess
+import sys
+from cairosvg import svg2png
 
-# Проверяем, установлен ли Inkscape
-def check_inkscape():
-    try:
-        subprocess.run(['inkscape', '--version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return False
+# --- Гарантированное определение базовой директории ---
+if getattr(sys, 'frozen', False):
+    # Если приложение "заморожено" (например, PyInstaller)
+    base_dir = os.path.dirname(sys.executable)
+else:
+    # Обычный запуск .py скрипта
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    base_dir = os.path.dirname(script_dir)
 
-# Проверяем, установлен ли ImageMagick
-def check_imagemagick():
-    try:
-        subprocess.run(['magick', '--version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return False
+print(f"[*] Базовая директория проекта: {base_dir}")
 
-def convert_svg_to_png(svg_path, png_path, width=800, height=600):
-    """Конвертирует SVG в PNG"""
-    # Пробуем использовать Inkscape
-    if check_inkscape():
-        cmd = [
-            'inkscape', 
-            svg_path, 
-            f'--export-width={width}',
-            f'--export-height={height}',
-            f'--export-filename={png_path}'
-        ]
-        subprocess.run(cmd, check=True)
-        return True
-    
-    # Пробуем использовать ImageMagick
-    if check_imagemagick():
-        cmd = [
-            'magick',
-            'convert',
-            f'-size', f'{width}x{height}',
-            svg_path,
-            png_path
-        ]
-        subprocess.run(cmd, check=True)
-        return True
-    
-    return False
+# Список пар (исходный SVG, целевой PNG)
+files_to_convert = [
+    (os.path.join(base_dir, "assets", "logo.svg"), os.path.join(base_dir, "assets", "logo.png")),
+    (os.path.join(base_dir, "screenshots", "main_menu.svg"), os.path.join(base_dir, "screenshots", "main_menu.png")),
+    (os.path.join(base_dir, "screenshots", "lighting_level.svg"), os.path.join(base_dir, "screenshots", "lighting_level.png")),
+    (os.path.join(base_dir, "screenshots", "particles_level.svg"), os.path.join(base_dir, "screenshots", "particles_level.png")),
+]
 
-if __name__ == "__main__":
-    # Создаем директорию для PNG, если её нет
-    os.makedirs('D:/KengaAI_Engine/screenshots/png', exist_ok=True)
-    
-    # Конвертируем SVG в PNG
-    svg_files = [
-        'D:/KengaAI_Engine/assets/logo.svg',
-        'D:/KengaAI_Engine/screenshots/main_menu.svg',
-        'D:/KengaAI_Engine/screenshots/lighting_level.svg',
-        'D:/KengaAI_Engine/screenshots/particles_level.svg'
-    ]
-    
-    for svg_file in svg_files:
-        if os.path.exists(svg_file):
-            filename = os.path.basename(svg_file)
-            name_without_ext = os.path.splitext(filename)[0]
-            png_file = f'D:/KengaAI_Engine/screenshots/png/{name_without_ext}.png'
-            
-            try:
-                if convert_svg_to_png(svg_file, png_file):
-                    print(f"Успешно конвертирован: {filename} -> {name_without_ext}.png")
-                else:
-                    print(f"Не удалось конвертировать {filename}: нет подходящих инструментов")
-            except Exception as e:
-                print(f"Ошибка при конвертации {filename}: {e}")
-        else:
-            print(f"Файл не найден: {svg_file}")
-    
-    print("\nДля ручной конвертации SVG в PNG вы можете:")
-    print("1. Использовать онлайн-конвертеры (например, https://svgtopng.com/)")
-    print("2. Установить Inkscape (https://inkscape.org/)")
-    print("3. Установить ImageMagick (https://imagemagick.org/)")
+# Проверяем наличие cairosvg
+try:
+    import cairosvg
+except ImportError:
+    print("Ошибка: cairosvg не установлен.")
+    print("Установите его командой: pip3 install cairosvg")
+    sys.exit(1)
+
+# Конвертируем файлы
+converted_count = 0
+for svg_path, png_path in files_to_convert:
+    if os.path.exists(svg_path):
+        print(f"Конвертируем {svg_path} -> {png_path}...")
+        try:
+            svg2png(url=svg_path, write_to=png_path, output_width=512, output_height=512)
+            print("✅ Готово")
+            converted_count += 1
+        except Exception as e:
+            print(f"❌ Ошибка конвертации: {e}")
+    else:
+        print(f"Файл не найден: {svg_path}")
+
+if converted_count == 0:
+    print("\nНи один файл не был сконвертирован.")
+else:
+    print(f"\n✅ Успешно сконвертировано {converted_count} файлов.")

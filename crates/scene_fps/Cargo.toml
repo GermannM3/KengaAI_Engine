@@ -13,3 +13,4 @@ categories = ["game-development"]
 serde = { workspace = true }
 serde_json = { workspace = true }
 anyhow = { workspace = true }
+kengaai-model-loader = { path = "../model_loader", version = "0.1.0" }

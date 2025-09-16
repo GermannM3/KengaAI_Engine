@@ -1191,6 +1191,7 @@ name = "kengaai-scene-fps"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "kengaai-model-loader",
  "serde",
  "serde_json",
 ]
