@@ -1,0 +1,47 @@
+# Build output
+build/
+out/
+cmake-build-*/
+
+# vcpkg installed packages
+vcpkg_installed/
+
+# Release packaging
+release/
+*.zip
+
+# Compiled binaries
+*.exe
+*.dll
+*.lib
+*.pdb
+*.ilk
+*.obj
+*.o
+
+# CMake cache
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+*.vcxproj.user
+
+# Engine runtime logs
+engine_stdout.txt
+engine_stderr.txt
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

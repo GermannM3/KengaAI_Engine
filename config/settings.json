@@ -1,0 +1,23 @@
+{
+    "window": {
+        "width": 1280,
+        "height": 720,
+        "fullscreen": false,
+        "vsync": true
+    },
+    "rendering": {
+        "shadow_resolution": 2048,
+        "bloom": true,
+        "ssr": true,
+        "fog": true,
+        "god_rays": true
+    },
+    "audio": {
+        "master": 1.0,
+        "music": 0.5,
+        "sfx": 1.0
+    },
+    "physics": {
+        "gravity": -9.81
+    }
+}

@@ -1,0 +1,91 @@
+---
+alwaysApply: true
+---
+
+Вот чёткие, неизменные правила проекта, цели и структура, которые должны сохраняться вечно (даже через год).
+Скопируй этот текст целиком в файл PROJECT_RULES.md (или ENGINE_RULES.md) в корне репозитория и всегда прикрепляй/вставляй его в начало каждого большого промпта для Cursor. Это будет "якорь" для AI, чтобы он не терял контекст.markdown
+
+# PROJECT_RULES.md — Неизменные правила и цели проекта (обязательно читай полностью каждый раз перед генерацией кода!)
+
+## Название проекта
+Kenga Engine (рабочий код: KengaEngine) — самописный игровой движок на современном C++ для AAA-игр, цель — в долгосрочной перспективе заместить функционал Unreal Engine 5 по ключевым направлениям (рендеринг, физика, редактор, мультиплеер, инструменты).
+
+## Главная цель проекта
+Создать модульный, высокопроизводительный, расширяемый игровой движок на C++20/23, способный запускать AAA-игры с высоким качеством графики, физики и геймплея. Движок должен быть полностью под контролем человека (Kenga), AI (Cursor) — только исполнитель.
+
+## Ключевые принципы (нарушение = откат)
+1. **C++20/23** — основной язык. Используй современные фичи: concepts, ranges, modules (когда стабильно), coroutines (осторожно), std::expected, std::span и т.д.
+2. **Модульная архитектура** — каждый модуль (Rendering, Physics, Audio, Networking, Editor…) в отдельной папке с собственным CMake. Минимальная связанность.
+3. **ECS (Entity-Component-System)** — основная модель объектов и геймплея (не классическое OOP с наследованием для игровых сущностей).
+4. **Vulkan** — основной graphics backend (DirectX 12 как альтернатива для Windows, OpenGL — только для прототипов, если Vulkan не запускается).
+5. **No garbage collector, no heavy runtime overhead** — максимальная производительность, ручное управление памятью где нужно (custom allocators).
+6. **Cross-platform** — сначала Windows, потом Linux, macOS, консоли (в будущем).
+7. **Тестируемость** — каждый модуль должен иметь unit-тесты (GoogleTest).
+8. **Документация в коде** — Doxygen-style комментарии к публичным API + README в каждой папке.
+9. **Кодстайл**:
+   - snake_case для переменных и функций
+   - PascalCase для типов и классов
+   - 4 пробела отступ
+   - clang-format (правила в .clang-format в корне)
+   - const/constexpr везде, где возможно
+   - RAII везде
+   - Избегай raw pointers (std::unique_ptr / std::shared_ptr / references)
+10. **Запреты**:
+    - Не используй exceptions для flow control (только для редких критических ошибок)
+    - Не добавляй зависимости без веских причин (предпочитай header-only или vcpkg)
+    - Не пиши монолитный код — разбивай на маленькие функции/классы
+    - Не меняй архитектуру без согласования с PROJECT_RULES.md
+
+## Долгосрочная дорожная карта (не менять без явного решения)
+(см. отдельный файл ROADMAP.md, но кратко здесь:)
+1. Подготовка + Core (game loop, input, logging, memory, ECS)
+2. Rendering (Vulkan, PBR, glTF, shadows, post-process)
+3. Physics (Bullet/PhysX)
+4. Audio (FMOD)
+5. Networking
+6. Asset pipeline
+7. AI / Gameplay systems
+8. In-engine Editor (ImGui + custom)
+9. Optimization (jobs, LOD, culling)
+10. Multi-platform + Release
+
+## Правила работы с Cursor / AI
+- Всегда начинай промпт с: "Следуй PROJECT_RULES.md строго. Проект — KengaEngine, AAA-движок на C++20/Vulkan/ECS."
+- Добавляй текущую фазу из ROADMAP.md.
+- Если добавляешь/меняешь файл — укажи полный путь.
+- После каждого крупного изменения — обновляй ARCHITECTURE.md (high-level диаграммы Mermaid, структура папок).
+- Если что-то неясно — спрашивай уточнения у человека, не придумывай сам.
+- Генерируй код чистым, компилируемым, с обработкой ошибок (Vulkan validation layers включены в debug).
+
+## Структура репозитория (обязательная, не менять без причины)
+
+KengaEngine/
+├── CMakeLists.txt
+├── .clang-format
+├── vcpkg.json               # зависимости
+├── PROJECT_RULES.md         # этот файл — всегда актуальный
+├── ROADMAP.md
+├── ARCHITECTURE.md          # high-level диаграммы и объяснения
+├── docs/                    # Doxygen или дополнительные доки
+├── external/                # если не через vcpkg
+├── src/
+│   ├── core/                # Game, Application, Time, Logging, Memory
+│   ├── ecs/                 # Entity, Component, System
+│   ├── input/               # InputManager
+│   ├── rendering/           # Vulkan backend, shaders, PBR
+│   ├── physics/
+│   ├── audio/
+│   ├── networking/
+│   ├── assets/
+│   ├── ai/
+│   ├── editor/
+│   └── main.cpp
+├── shaders/                 # GLSL / HLSL
+├── assets/                  # тестовые модели, текстуры
+├── tests/
+└── third_party/             # если нужно
+
+С этого момента **каждый промпт в Cursor** должен начинаться примерно так:
+
+Следуй строго PROJECT_RULES.md и текущей фазе из ROADMAP.md.
+Проект: KengaEngine — AAA игровой движок на C++20 / Vulkan / ECS.

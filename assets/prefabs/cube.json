@@ -1,0 +1,8 @@
+{
+  "prefab_name": "Cube",
+  "Position": [0, 5, 0],
+  "Rotation": {"angle": 0, "speed": 0},
+  "Scale": [1, 1, 1],
+  "Orientation": [1, 0, 0, 0],
+  "RigidBody": {"mass": 1.0, "is_static": false}
+}

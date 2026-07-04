@@ -1,0 +1,18 @@
+{
+  "prefab_name": "SparkEmitter",
+  "Position": [0, 2, 0],
+  "ParticleEmitter": {
+    "position_offset": [0, 0, 0],
+    "emit_rate": 80,
+    "lifetime_min": 0.3,
+    "lifetime_max": 1.0,
+    "velocity_min": [-2, 1, -2],
+    "velocity_max": [2, 6, 2],
+    "color_start": [1, 0.8, 0.2, 1],
+    "color_end": [1, 0.1, 0, 0],
+    "size_start": 5,
+    "size_end": 1,
+    "loop": true,
+    "active": true
+  }
+}

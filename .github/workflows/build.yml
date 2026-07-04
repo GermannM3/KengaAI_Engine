@@ -1,0 +1,45 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'aa2d37682e3318d93aef87efa7b0e88e81cd3d59'
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . `
+            -DCMAKE_TOOLCHAIN_FILE="${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.config }} -- /maxcpucount
+
+      - name: Run Tests
+        run: ctest --test-dir build -C ${{ matrix.config }} --output-on-failure
+
+      - name: Upload Build Artifact
+        if: matrix.config == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: KengaEngine-${{ matrix.config }}
+          path: |
+            build/${{ matrix.config }}/KengaEngine.exe
+            build/${{ matrix.config }}/*.dll
+          retention-days: 7

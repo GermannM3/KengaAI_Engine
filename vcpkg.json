@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "kenga-engine",
+  "version": "0.1.0",
+  "description": "AAA game engine on C++20/Vulkan/ECS",
+  "dependencies": [
+    "glfw3",
+    "glm",
+    {"name": "imgui", "features": ["glfw-binding", "vulkan-binding"]},
+    "shaderc",
+    "spdlog",
+    "bullet3",
+    "miniaudio",
+    "lua",
+    "nlohmann-json",
+    "sol2",
+    "stb",
+    "tinygltf",
+    "vulkan",
+    "gtest"
+  ],
+  "builtin-baseline": "aa2d37682e3318d93aef87efa7b0e88e81cd3d59"
+}

@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# ROADMAP — Фазы Kenga Engine
+
+При работе с проектом всегда учитывай текущую фазу из ROADMAP.md.
+
+## Иерархия фаз
+
+1. **Фаза 1** — Подготовка: CMake, vcpkg, glm, spdlog, базовый main
+2. **Фаза 2** — Core: Game loop, input (GLFW/SDL), ECS, memory pool
+3. **Фаза 3** — Rendering: Vulkan, glTF, PBR, shadows, post-process
+4. **Фаза 4** — Physics: Bullet/PhysX
+5. **Фаза 5** — Audio: FMOD/Wwise
+6. **Фаза 6** — Networking
+7. **Фаза 7** — Asset pipeline
+8. **Фаза 8** — AI / Gameplay
+9. **Фаза 9** — Editor
+10. **Фаза 10** — Optimization
+11. **Фаза 11** — Platform support
+12. **Фаза 12** — Testing, QA, релиз
+
+## Правило
+
+Перед генерацией кода открывай ROADMAP.md и проверяй:
+- какую фазу реализуем;
+- какие у неё зависимости;
+- какой тест/критерий завершения.
